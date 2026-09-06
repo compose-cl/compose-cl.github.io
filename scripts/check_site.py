@@ -39,12 +39,20 @@ def main():
         assert page.locator(".resource-button[disabled]").count() == 2
         assert page.locator("#composition-explorer").is_visible()
         assert "Lato" in page.locator("h1").evaluate("e => getComputedStyle(e).fontFamily")
+        assert page.locator("main > section").evaluate_all("sections => sections.slice(0, 2).map(section => section.id)") == ["top", "results"]
+        assert page.locator("#top .eyebrow").count() == 0
+        assert page.locator(".scope-section").count() == 0
+        assert page.locator("#search-title").inner_text() == "Task-Level Successive Halving"
+        assert "preliminary evidence for our hypothesis" in page.locator("#search .section-heading").inner_text()
+        assert "Compositions of multiple continual learning mechanisms make memory last longer." == page.locator("#teaser-title").inner_text()
+        assert not page.locator("a[href]").evaluate_all("links => links.some(link => /\\.pdf(?:$|[?#])/i.test(link.getAttribute('href')))")
+        assert not any(path.suffix.lower() == ".pdf" for path in root.rglob("*") if ".git" not in path.parts)
 
-        # All in-page destinations and original vector PDFs must resolve.
+        # All in-page destinations and full-resolution PNG links must resolve.
         for link in page.locator('a[href^="#"]').all():
             target = link.get_attribute("href")
             assert page.locator(target).count() == 1, target
-        for link in page.locator(".pdf-link").all():
+        for link in page.locator(".figure-link").all():
             assert context.request.get(f"{url}/{link.get_attribute('href')}").status == 200
 
         # Check every checkbox combination, including output ranks and uncertainties.
@@ -79,12 +87,14 @@ def main():
         page.evaluate("Object.defineProperty(navigator, 'clipboard', {configurable:true, value:undefined})")
         page.locator("#copy-bibtex").click()
         assert "Ctrl+C" in page.locator("#copy-status").inner_text()
-        assert "@misc" in page.evaluate("window.getSelection().toString()")
+        assert "@article" in page.evaluate("window.getSelection().toString()")
         page.evaluate("window.getSelection().removeAllRanges()")
         page.evaluate("Object.defineProperty(navigator, 'clipboard', {configurable:true, value:{writeText:async text=>{window.copiedCitation=text}}})")
         page.locator("#copy-bibtex").click()
         page.wait_for_function("document.getElementById('copy-status').textContent === 'BibTeX copied to clipboard.'")
         assert "zhang2026continual" in page.evaluate("window.copiedCitation")
+        assert page.evaluate("window.copiedCitation.startsWith('@article{')")
+        assert not page.evaluate("/^\\s*url\\s*=/mi.test(window.copiedCitation)")
 
         for width in (1440, 1024, 768, 390, 320):
             page.set_viewport_size({"width": width, "height": 1050 if width > 640 else 844})

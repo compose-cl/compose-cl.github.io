@@ -21,14 +21,15 @@ Open <http://localhost:8000>. JavaScript enhances the page with a 16-combination
 - `static/js/project.js`: accessible results explorer and citation-copy behavior.
 - `static/js/results-data.js`: final retention means and standard deviations for the 16 factorial combinations. Values are transcribed at the manuscript's one-decimal precision from the complete results tables for Symbol-QA, LLM-QA, and Real-QA.
 - `static/images/`: web-rendered figures, favicon, and social preview.
-- `static/figures/`: original vector PDFs for the four figures used on the page.
-- `scripts/render_figures.py`: reproducible PDF-to-PNG export. Requires PyMuPDF. The source PDFs must already be in `static/figures/`.
+- `scripts/render_figures.py`: reproducible PNG export from an external directory of manuscript figures. Requires PyMuPDF. Run `python3 scripts/render_figures.py --source-dir /path/to/manuscript/figures`. Source PDFs stay outside this repository and are never copied into it.
 - `scripts/check_site.py`: Playwright browser checks for all 16 combinations, keyboard controls, citation copying, local links, and five viewport widths. Pass `--render-social` to regenerate the social preview too.
 - `scripts/social-preview.html`: source layout for the 1200 × 630 social preview, rendered with a browser screenshot.
 
 Paper and code are **not released yet**. Their buttons are intentionally disabled and labeled “Coming soon.” Upon release, replace each disabled button with an anchor to the actual public URL, remove the coming-soon label, and update the project citation if needed. Do not link a private development repository or an unverified manuscript PDF.
 
 The main result uses the same fixed composition on all datasets: SI + SD + generative replay + merged LoRA. Its final retention is 18.5%, 41.8%, and 44.3%, respectively, and it ranks among the top 3 of the 16 factorial methods on every dataset. Dataset-specific winners are separate comparisons.
+
+The interactive factorial comparison is the first section below the title block. Only PNG figure assets are published. PDFs are excluded from the website and ignored by Git. The BibTeX entry uses `@article` without a URL field.
 
 ## Deployment
 
@@ -42,9 +43,9 @@ Figures and research text were synchronized with the authors' manuscript at revi
 
 | Manuscript asset | Website asset |
 | --- | --- |
-| `survival.pdf` | `survival.pdf` / `survival.png` |
-| `anchors_allocation_intro_figure.pdf` | `anchors-allocation.pdf` / `anchors-allocation.png` |
-| `fig_factorial_matrix.pdf` | `factorial.pdf` / `factorial.png` |
-| `sho_results.pdf` | `sho-results.pdf` / `sho-results.png` |
+| `survival.pdf` | `survival.png` |
+| `anchors_allocation_intro_figure.pdf` | `anchors-allocation.png` |
+| `fig_factorial_matrix.pdf` | `factorial.png` |
+| `sho_results.pdf` | `sho-results.png` |
 
 The website template is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Bulma is MIT-licensed (notice in its CSS). Original, unmodified Lato and IBM Plex Mono fonts are bundled under the SIL Open Font License, with notices in `static/fonts/OFL.txt` and `static/fonts/ibm-plex-mono/OFL.txt`. Lato is used for the page and figures, with IBM Plex Mono for the citation block. The website's license does not set a license for unreleased research code or datasets.

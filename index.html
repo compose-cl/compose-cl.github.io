@@ -36,9 +36,9 @@
     <div class="header-inner">
       <a class="project-brand" href="#top" aria-label="ComposeCL home"><img src="static/images/favicon.svg" width="28" height="28" alt="">Compose<span>CL</span></a>
       <nav aria-label="Page navigation">
+        <a href="#results">Results</a>
         <a href="#method">Method</a>
         <a href="#datasets">Datasets</a>
-        <a href="#results">Results</a>
         <a href="#citation">Citation</a>
       </nav>
     </div>
@@ -48,7 +48,6 @@
     <section class="hero" id="top" aria-labelledby="paper-title">
       <div class="hero-body">
         <div class="container is-max-desktop has-text-centered">
-          <p class="eyebrow">Continual learning · Long-horizon memorization</p>
           <h1 class="title is-1 publication-title" id="paper-title">Continual Learning Mechanisms Compose for Long-Horizon Memorization</h1>
           <div class="publication-authors">
             <span class="author-block"><a href="https://zheyuanzhang.me/">Zheyuan Zhang</a><sup>*</sup></span>
@@ -71,65 +70,6 @@
           </div>
           <p class="headline-note">Final retention is accuracy on all learned tasks after task 100. Rankings compare the 16 factorial combinations.</p>
         </div>
-      </div>
-    </section>
-
-    <section class="teaser section" aria-labelledby="teaser-title">
-      <div class="container is-max-desktop">
-        <div class="section-heading compact-heading">
-          <p class="eyebrow">The central finding</p>
-          <h2 class="title is-3" id="teaser-title">Composition makes memories last longer.</h2>
-        </div>
-        <figure class="paper-figure">
-          <a class="figure-link" href="static/images/survival.png" aria-label="Open the memory-lifetime figure at full resolution"><img src="static/images/survival.png" width="2400" height="897" fetchpriority="high" alt="Memory accuracy declines much more slowly for compositions than for naive fine-tuning or the best single mechanism. The all-mechanism composition has memory half-lives of 19, 32, and 32 tasks on Symbol-QA, LLM-QA, and Real-QA."></a>
-          <figcaption>Memory accuracy after learning additional tasks. Lines show means and bands span the minimum and maximum over three seeds. Half-life is the number of later tasks before accuracy falls below half its initial value. <strong>Compositions substantially extend memory lifetime.</strong> <a class="pdf-link" href="static/figures/survival.pdf">Figure PDF ↗</a></figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="section abstract-section" id="abstract" aria-labelledby="abstract-title">
-      <div class="container is-max-desktop">
-        <h2 class="title is-3" id="abstract-title">Abstract</h2>
-        <div class="content abstract-copy">
-          <p>Language models may need to internalize information that arrives over time and retain it through many subsequent updates. To study this challenge, we introduce <em>long-horizon memorization</em>, a setting in which a model learns 100 query-answer tasks through continual supervised fine-tuning without retaining earlier training examples or receiving task identifiers at inference. Sequential updates cause catastrophic forgetting, and no single continual learning mechanism we evaluate maintains strong retention at this horizon. We hypothesize that mechanisms addressing complementary sources of forgetting will be more effective when composed. We organize these compositions along two design dimensions. <em>Data, function, and weight anchors</em> specify what prior information each update should preserve, while <em>low-rank allocation rules</em> determine where successive updates are retained. To test this hypothesis systematically, we construct three distinct 100-task memorization datasets. We introduce task-level successive halving to search the combinatorial design space and use a factorial experiment to measure individual and interaction effects. Our best method combines all three anchors with merged LoRA, ranks among the top 3 methods in all datasets, and raises average final retention from 1.2% under naive sequential fine-tuning to <strong>34.9%, a 28-fold improvement</strong>. The data anchor and merged LoRA provide the largest average gains and interact super-additively on all three datasets. Together, these results show that composing complementary mechanisms substantially improves long-horizon memorization beyond what any individual mechanism achieves.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="method" aria-labelledby="method-title">
-      <div class="container is-max-desktop">
-        <div class="section-heading">
-          <p class="eyebrow">Two design dimensions</p>
-          <h2 class="title is-3" id="method-title">What to preserve. Where to retain updates.</h2>
-          <p>Anchors constrain model changes while learning new tasks. Low-rank allocation determines which parameters are updated and what is retained for later tasks.</p>
-        </div>
-        <figure class="paper-figure method-figure">
-          <a class="figure-link" href="static/images/anchors-allocation.png" aria-label="Open the anchors and allocation diagram at full resolution"><img src="static/images/anchors-allocation.png" loading="lazy" width="2400" height="626" alt="Data, function, and weight anchors jointly constrain learning. Shared LoRA reuses the same low-rank factors, while merged LoRA merges each learned update into the model and initializes fresh factors for the next task."></a>
-          <figcaption>The three anchors act together, not sequentially. The weights before and after each task are successive versions of the same model. <a class="pdf-link" href="static/figures/anchors-allocation.pdf">Figure PDF ↗</a></figcaption>
-        </figure>
-        <div class="mechanism-grid">
-          <article class="mechanism-card data-anchor"><span class="mechanism-index">01 / Data anchor</span><h3>Revisit generated examples</h3><p>Generate replay from the previous model and use its soft targets to retain earlier information without keeping past training data.</p></article>
-          <article class="mechanism-card function-anchor"><span class="mechanism-index">02 / Function anchor</span><h3>Keep outputs consistent</h3><p>Use self-distillation to match the previous model’s output distribution on current-task inputs.</p></article>
-          <article class="mechanism-card weight-anchor"><span class="mechanism-index">03 / Weight anchor</span><h3>Protect important parameters</h3><p>Limit changes to parameters identified as important for earlier tasks, using Synaptic Intelligence or EWC.</p></article>
-          <article class="mechanism-card allocation"><span class="mechanism-index">04 / Low-rank allocation</span><h3>Make room for the next update</h3><p>Merged LoRA incorporates each task’s update into the model and initializes fresh low-rank factors for the next task.</p></article>
-        </div>
-        <p class="section-note">Our primary compositions maintain a constant retained state size with respect to the number of tasks.</p>
-      </div>
-    </section>
-
-    <section class="section tinted-section" id="datasets" aria-labelledby="datasets-title">
-      <div class="container is-max-desktop">
-        <div class="section-heading">
-          <p class="eyebrow">Evaluating long-horizon memory</p>
-          <h2 class="title is-3" id="datasets-title">Three datasets. One hundred tasks each.</h2>
-          <p>A model learns tasks one at a time, without retaining earlier training examples or receiving task identifiers at inference. We measure recall of the queries it has learned.</p>
-        </div>
-        <div class="dataset-grid">
-          <article class="dataset-card"><p class="dataset-kind">Random associations</p><h3>Symbol-QA</h3><p>Randomly generated key-value associations test memorization without semantic clues.</p><div class="dataset-count"><strong>10,000</strong><span>query-answer pairs</span></div></article>
-          <article class="dataset-card"><p class="dataset-kind">Fictional knowledge</p><h3>LLM-QA</h3><p>LLM-generated queries and answers span 100 fictional topics, reducing reliance on pretrained knowledge.</p><div class="dataset-count"><strong>10,000</strong><span>query-answer pairs</span></div></article>
-          <article class="dataset-card"><p class="dataset-kind">Natural questions</p><h3>Real-QA</h3><p>Natural queries from 10 public QA datasets are filtered to exclude those answered correctly by the base model.</p><div class="dataset-count"><strong>5,000</strong><span>query-answer pairs</span></div></article>
-        </div>
-        <p class="section-note">Each query has exactly one target answer in the two synthetically generated datasets.</p>
       </div>
     </section>
 
@@ -159,9 +99,68 @@
         </div>
         <figure class="paper-figure factorial-figure">
           <a class="figure-link" href="static/images/factorial.png" aria-label="Open all sixteen factorial results at full resolution"><img src="static/images/factorial.png" loading="lazy" width="2400" height="905" alt="Final retention for all sixteen combinations. The best means are 23.2% on Symbol-QA, 41.8% on LLM-QA, and 54.8% on Real-QA. Filled markers identify active mechanisms."></a>
-          <figcaption>All 16 combinations, averaged over three seeds. Filled markers identify active mechanisms. <strong>The strongest compositions substantially outperform standalone mechanisms.</strong> <a class="pdf-link" href="static/figures/factorial.pdf">Figure PDF ↗</a></figcaption>
+          <figcaption>All 16 combinations, averaged over three seeds. Filled markers identify active mechanisms. <strong>The strongest compositions substantially outperform standalone mechanisms.</strong></figcaption>
         </figure>
         <div class="finding-callout"><span class="eyebrow">What the factorial reveals</span><p>Replay and merged LoRA provide the largest average gains. Their joint benefit exceeds the sum of their individual gains on all three datasets. <strong>Combining all three anchors with merged LoRA is the only composition among the top 3 on every dataset.</strong></p></div>
+      </div>
+    </section>
+
+    <section class="teaser section" aria-labelledby="teaser-title">
+      <div class="container is-max-desktop">
+        <div class="section-heading compact-heading">
+          <p class="eyebrow">The central finding</p>
+          <h2 class="title is-3" id="teaser-title">Compositions of multiple continual learning mechanisms make memory last longer.</h2>
+        </div>
+        <figure class="paper-figure">
+          <a class="figure-link" href="static/images/survival.png" aria-label="Open the memory-lifetime figure at full resolution"><img src="static/images/survival.png" width="2400" height="897" fetchpriority="high" alt="Memory accuracy declines much more slowly for compositions than for naive fine-tuning or the best single mechanism. The all-mechanism composition has memory half-lives of 19, 32, and 32 tasks on Symbol-QA, LLM-QA, and Real-QA."></a>
+          <figcaption>Memory accuracy after learning additional tasks. Lines show means and bands span the minimum and maximum over three seeds. Half-life is the number of later tasks before accuracy falls below half its initial value. <strong>Compositions substantially extend memory lifetime.</strong></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section abstract-section" id="abstract" aria-labelledby="abstract-title">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3" id="abstract-title">Abstract</h2>
+        <div class="content abstract-copy">
+          <p>Language models may need to internalize information that arrives over time and retain it through many subsequent updates. To study this challenge, we introduce <em>long-horizon memorization</em>, a setting in which a model learns 100 query-answer tasks through continual supervised fine-tuning without retaining earlier training examples or receiving task identifiers at inference. Sequential updates cause catastrophic forgetting, and no single continual learning mechanism we evaluate maintains strong retention at this horizon. We hypothesize that mechanisms addressing complementary sources of forgetting will be more effective when composed. We organize these compositions along two design dimensions. <em>Data, function, and weight anchors</em> specify what prior information each update should preserve, while <em>low-rank allocation rules</em> determine where successive updates are retained. To test this hypothesis systematically, we construct three distinct 100-task memorization datasets. We introduce task-level successive halving to search the combinatorial design space and use a factorial experiment to measure individual and interaction effects. Our best method combines all three anchors with merged LoRA, ranks among the top 3 methods in all datasets, and raises average final retention from 1.2% under naive sequential fine-tuning to <strong>34.9%, a 28-fold improvement</strong>. The data anchor and merged LoRA provide the largest average gains and interact super-additively on all three datasets. Together, these results show that composing complementary mechanisms substantially improves long-horizon memorization beyond what any individual mechanism achieves.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="method" aria-labelledby="method-title">
+      <div class="container is-max-desktop">
+        <div class="section-heading">
+          <p class="eyebrow">Two design dimensions</p>
+          <h2 class="title is-3" id="method-title">What to preserve. Where to retain updates.</h2>
+          <p>Anchors constrain model changes while learning new tasks. Low-rank allocation determines which parameters are updated and what is retained for later tasks.</p>
+        </div>
+        <figure class="paper-figure method-figure">
+          <a class="figure-link" href="static/images/anchors-allocation.png" aria-label="Open the anchors and allocation diagram at full resolution"><img src="static/images/anchors-allocation.png" loading="lazy" width="2400" height="626" alt="Data, function, and weight anchors jointly constrain learning. Shared LoRA reuses the same low-rank factors, while merged LoRA merges each learned update into the model and initializes fresh factors for the next task."></a>
+          <figcaption>The three anchors act together, not sequentially. The weights before and after each task are successive versions of the same model.</figcaption>
+        </figure>
+        <div class="mechanism-grid">
+          <article class="mechanism-card data-anchor"><span class="mechanism-index">01 / Data anchor</span><h3>Revisit generated examples</h3><p>Generate replay from the previous model and use its soft targets to retain earlier information without keeping past training data.</p></article>
+          <article class="mechanism-card function-anchor"><span class="mechanism-index">02 / Function anchor</span><h3>Keep outputs consistent</h3><p>Use self-distillation to match the previous model’s output distribution on current-task inputs.</p></article>
+          <article class="mechanism-card weight-anchor"><span class="mechanism-index">03 / Weight anchor</span><h3>Protect important parameters</h3><p>Limit changes to parameters identified as important for earlier tasks, using Synaptic Intelligence or EWC.</p></article>
+          <article class="mechanism-card allocation"><span class="mechanism-index">04 / Low-rank allocation</span><h3>Make room for the next update</h3><p>Merged LoRA incorporates each task’s update into the model and initializes fresh low-rank factors for the next task.</p></article>
+        </div>
+        <p class="section-note">Our primary compositions maintain a constant retained state size with respect to the number of tasks.</p>
+      </div>
+    </section>
+
+    <section class="section tinted-section" id="datasets" aria-labelledby="datasets-title">
+      <div class="container is-max-desktop">
+        <div class="section-heading">
+          <p class="eyebrow">Evaluating long-horizon memory</p>
+          <h2 class="title is-3" id="datasets-title">Three datasets. One hundred tasks each.</h2>
+          <p>A model learns tasks one at a time, without retaining earlier training examples or receiving task identifiers at inference. We measure recall of the queries it has learned.</p>
+        </div>
+        <div class="dataset-grid">
+          <article class="dataset-card"><p class="dataset-kind">Random associations</p><h3>Symbol-QA</h3><p>Randomly generated key-value associations test memorization without semantic clues.</p><div class="dataset-count"><strong>10,000</strong><span>query-answer pairs</span></div></article>
+          <article class="dataset-card"><p class="dataset-kind">Fictional knowledge</p><h3>LLM-QA</h3><p>LLM-generated queries and answers span 100 fictional topics, reducing reliance on pretrained knowledge.</p><div class="dataset-count"><strong>10,000</strong><span>query-answer pairs</span></div></article>
+          <article class="dataset-card"><p class="dataset-kind">Natural questions</p><h3>Real-QA</h3><p>Natural queries from 10 public QA datasets are filtered to exclude those answered correctly by the base model.</p><div class="dataset-count"><strong>5,000</strong><span>query-answer pairs</span></div></article>
+        </div>
+        <p class="section-note">Each query has exactly one target answer in the two synthetically generated datasets.</p>
       </div>
     </section>
 
@@ -169,31 +168,23 @@
       <div class="container is-max-desktop">
         <div class="section-heading">
           <p class="eyebrow">Searching the combinatorial design space</p>
-          <h2 class="title is-3" id="search-title">Successive halving, measured in tasks.</h2>
-          <p>We begin with 90 candidate methods and extend the task horizon for the surviving set. After 10, 20, and 50 tasks, we retain the top 45, 23, and 10 candidates, respectively, ranked by mean retention over three seeds.</p>
+          <h2 class="title is-3" id="search-title">Task-Level Successive Halving</h2>
+          <p>We introduce Task-Level Successive Halving to seek preliminary evidence for our hypothesis that composing complementary mechanisms improves long-horizon memorization. Starting with 90 candidates, we retain the top 45, 23, and 10 after 10, 20, and 50 tasks, respectively, based on mean retention over three seeds.</p>
         </div>
         <figure class="paper-figure">
           <a class="figure-link" href="static/images/sho-results.png" aria-label="Open the successive-halving figure at full resolution"><img src="static/images/sho-results.png" loading="lazy" width="2400" height="1250" alt="Four stages of task-level successive halving at 10, 20, 50, and 100 tasks. Standalone mechanisms are eliminated before 50 tasks. All methods reaching 100 tasks combine a data anchor with merged LoRA."></a>
-          <figcaption>A percentile rank is the percentage of other surviving candidates ranked below a method. Bars average these ranks over variants and then datasets. Gray entries have no surviving variants in any dataset. Ranks are relative to the changing candidate pool, not changes in absolute retention. <strong>Every method reaching 100 tasks combines replay with merged LoRA.</strong> <a class="pdf-link" href="static/figures/sho-results.pdf">Figure PDF ↗</a></figcaption>
+          <figcaption>A percentile rank is the percentage of other surviving candidates ranked below a method. Bars average these ranks over variants and then datasets. Gray entries have no surviving variants in any dataset. Ranks are relative to the changing candidate pool, not changes in absolute retention. <strong>Every method reaching 100 tasks combines replay with merged LoRA.</strong></figcaption>
         </figure>
-      </div>
-    </section>
-
-    <section class="section scope-section" aria-labelledby="scope-title">
-      <div class="container is-max-desktop scope-inner">
-        <h2 class="title is-3" id="scope-title">Scope and limitations</h2>
-        <p>We study memorization of learned queries, not generalization to new formulations of those queries. Stronger memorization also does not ensure preservation of general capability. Our additional reasoning and knowledge evaluations still show substantial forgetting.</p>
       </div>
     </section>
 
     <section class="section citation-section" id="citation" aria-labelledby="citation-title">
       <div class="container is-max-desktop">
         <div class="citation-heading"><div><h2 class="title is-3" id="citation-title">Citation</h2><p>Project citation. Paper and code links will be added upon release.</p></div><button type="button" class="copy-button" id="copy-bibtex" hidden>Copy BibTeX</button></div>
-        <pre class="bibtex"><code id="bibtex-code">@misc{zhang2026continual,
+        <pre class="bibtex"><code id="bibtex-code">@article{zhang2026continual,
   title  = {Continual Learning Mechanisms Compose for Long-Horizon Memorization},
   author = {Zhang, Zheyuan and Zhang, Alvin and Khashabi, Daniel and Shu, Tianmin},
-  year   = {2026},
-  url    = {https://compose-cl.github.io/}
+  year   = {2026}
 }</code></pre>
         <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
       </div>

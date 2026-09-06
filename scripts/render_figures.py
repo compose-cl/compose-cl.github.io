@@ -1,18 +1,34 @@
-"""Render the published figure PDFs for the web without changing their design.
+"""Render external manuscript figures as PNGs without changing their design.
 
-Run from the repository root: python3 scripts/render_figures.py
-Dependency: PyMuPDF. PDFs are kept alongside their web renderings for download.
+Run: python3 scripts/render_figures.py --source-dir /path/to/manuscript/figures
+Dependency: PyMuPDF. Source PDFs stay outside the website repository.
 """
 
+import argparse
 from pathlib import Path
 
 import fitz
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-dir", type=Path, required=True, help="External directory containing the manuscript figure PDFs.")
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    for name in ("survival", "anchors-allocation", "factorial", "sho-results"):
-        with fitz.open(root / "static" / "figures" / f"{name}.pdf") as document:
+    source = args.source_dir.resolve()
+    if source == root or root in source.parents:
+        parser.error("Source PDFs must remain outside the website repository.")
+    figures = {
+        "survival": "survival.pdf",
+        "anchors-allocation": "anchors_allocation_intro_figure.pdf",
+        "factorial": "fig_factorial_matrix.pdf",
+        "sho-results": "sho_results.pdf",
+    }
+    for filename in figures.values():
+        if not (source / filename).is_file():
+            parser.error(f"Missing source figure: {source / filename}")
+    for name, filename in figures.items():
+        with fitz.open(source / filename) as document:
             page = document[0]
             pixmap = page.get_pixmap(matrix=fitz.Matrix(2400 / page.rect.width, 2400 / page.rect.width), alpha=False)
             output = root / "static" / "images" / f"{name}.png"
