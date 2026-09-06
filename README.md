@@ -23,7 +23,7 @@ Open <http://localhost:8000>. JavaScript enhances the page with a 16-combination
 - `static/images/`: web-rendered figures, favicon, and social preview.
 - `scripts/render_figures.py`: reproducible PNG export from an external directory of manuscript figures. Requires PyMuPDF. Run `python3 scripts/render_figures.py --source-dir /path/to/manuscript/figures`. Source PDFs stay outside this repository and are never copied into it.
 - `scripts/check_site.py`: Playwright browser checks for all 16 combinations, keyboard controls, citation copying, local links, and five viewport widths. Pass `--render-social` to regenerate the social preview too.
-- `scripts/social-preview.html`: source layout for the 1200 × 630 social preview, rendered with a browser screenshot.
+- `scripts/social-preview.html`: source layout for the 1200 × 630 social preview, with the retention improvement above the two-design-dimensions diagram. Rendered with a browser screenshot. The versioned image URLs in the sharing metadata should be updated when the card changes.
 
 Paper and code are **not released yet**. Their buttons are intentionally disabled and labeled “Coming soon.” Upon release, replace each disabled button with an anchor to the actual public URL, remove the coming-soon label, and update the project citation if needed. Do not link a private development repository or an unverified manuscript PDF.
 

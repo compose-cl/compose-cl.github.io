@@ -131,6 +131,20 @@ def main():
             social.goto(f"{url}/scripts/social-preview.html", wait_until="networkidle")
             social.evaluate("document.fonts.ready")
             assert social.evaluate("document.documentElement.scrollHeight <= 630")
+            assert social.evaluate("document.documentElement.scrollWidth <= 1200")
+            assert social.locator(".metrics, .metric").count() == 0
+            assert social.locator(".summary strong").inner_text() == "28"
+            assert social.locator(".summary strong").evaluate("e => getComputedStyle(e).fontWeight") == "700"
+            assert social.locator(".diagram").evaluate("e => e.complete && e.naturalWidth === 2400")
+            assert social.locator(".diagram").get_attribute("src") == "../static/images/anchors-allocation.png"
+            summary = social.locator(".summary").inner_text()
+            assert "after 100 tasks from 1.2% to 34.9%, a 28-fold improvement" in summary
+            assert page.locator('meta[property="og:description"]').get_attribute("content") == summary
+            assert page.locator('meta[name="twitter:description"]').get_attribute("content") == summary
+            diagram_box = social.locator(".diagram").bounding_box()
+            summary_box = social.locator(".summary").bounding_box()
+            assert diagram_box["y"] >= summary_box["y"] + summary_box["height"]
+            assert diagram_box["y"] + diagram_box["height"] <= 598
             social.screenshot(path=str(root / "static" / "images" / "social-preview.png"))
         browser.close()
 
