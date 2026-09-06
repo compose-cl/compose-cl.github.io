@@ -27,7 +27,7 @@ Open <http://localhost:8000>. JavaScript enhances the page with a 16-combination
 - `scripts/check_site.py` and `scripts/check_tsh.py`: Playwright browser checks for all 16 combinations, the actual surviving candidates at and between every pruning boundary on all three datasets, autoplay/pause/replay, scrubbing, reduced motion, keyboard controls, citation copying, local links, and five viewport widths. Pass `--render-social` to regenerate the social preview too.
 - `scripts/social-preview.html`: source layout for the 1200 × 630 social preview, with the retention improvement above the two-design-dimensions diagram. Rendered with a browser screenshot. The versioned image URLs in the sharing metadata should be updated when the card changes.
 
-The [official code and datasets](https://github.com/cozheyuanzhangde/compose-cl) are released. The paper button remains disabled and labeled “Coming soon” until a public paper URL is available. Do not link a private development repository or an unverified manuscript PDF.
+The [paper](https://www.alphaxiv.org/pdf/2609.compose-cl) and [official code and datasets](https://github.com/cozheyuanzhangde/compose-cl) are available through the resource buttons at the top of the page.
 
 The main result uses the same fixed composition on all datasets: SI + SD + generative replay + merged LoRA. Its final retention is 18.5%, 41.8%, and 44.3%, respectively, and it ranks among the top 3 of the 16 factorial methods on every dataset. Dataset-specific winners are separate comparisons.
 

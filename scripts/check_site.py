@@ -37,7 +37,8 @@ def main():
         page.evaluate("document.fonts.ready")
         assert page.evaluate("[...document.fonts].every(font => font.status !== 'error')"), (page.evaluate("[...document.fonts].map(font => [font.family, font.status])"), errors)
         assert page.locator("h1").count() == 1
-        assert page.locator(".resource-button[disabled]").count() == 1
+        assert page.locator(".resource-button[disabled]").count() == 0
+        assert page.locator('a.resource-button[href="https://www.alphaxiv.org/pdf/2609.compose-cl"]').inner_text() == "Paper"
         assert page.locator('a.resource-button[href="https://github.com/cozheyuanzhangde/compose-cl"]').inner_text() == "Code"
         assert page.locator('.publication-authors a[href="https://alvinzh04.github.io/"]').inner_text() == "Alvin Zhang"
         assert page.locator("#composition-explorer").is_visible()
