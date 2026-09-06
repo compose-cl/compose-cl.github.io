@@ -11,6 +11,7 @@ import argparse
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
+from check_tsh import check_tsh, check_tsh_playback
 
 
 def main():
@@ -36,7 +37,9 @@ def main():
         page.evaluate("document.fonts.ready")
         assert page.evaluate("[...document.fonts].every(font => font.status !== 'error')"), (page.evaluate("[...document.fonts].map(font => [font.family, font.status])"), errors)
         assert page.locator("h1").count() == 1
-        assert page.locator(".resource-button[disabled]").count() == 2
+        assert page.locator(".resource-button[disabled]").count() == 1
+        assert page.locator('a.resource-button[href="https://github.com/cozheyuanzhangde/compose-cl"]').inner_text() == "Code"
+        assert page.locator('.publication-authors a[href="https://alvinzh04.github.io/"]').inner_text() == "Alvin Zhang"
         assert page.locator("#composition-explorer").is_visible()
         assert "Lato" in page.locator("h1").evaluate("e => getComputedStyle(e).fontFamily")
         for author in page.locator(".publication-authors a").all():
@@ -101,6 +104,9 @@ def main():
         assert page.evaluate("window.copiedCitation.startsWith('@article{')")
         assert not page.evaluate("/^\\s*url\\s*=/mi.test(window.copiedCitation)")
 
+        check_tsh(page, output)
+        check_tsh_playback(browser, url, errors)
+
         for width in (1440, 1024, 768, 390, 320):
             page.set_viewport_size({"width": width, "height": 1050 if width > 640 else 844})
             page.evaluate("window.scrollTo(0,0)")
@@ -120,6 +126,8 @@ def main():
         static_page = no_js.new_page()
         static_page.goto(url, wait_until="networkidle")
         assert not static_page.locator("#composition-explorer").is_visible()
+        assert not static_page.locator("#tsh-explorer").is_visible()
+        assert static_page.locator("#tsh-fallback").is_visible()
         assert static_page.locator("#abstract").is_visible()
         assert static_page.locator(".factorial-figure").is_visible()
         assert static_page.locator("#bibtex-code").is_visible()
@@ -132,6 +140,8 @@ def main():
             social.evaluate("document.fonts.ready")
             assert social.evaluate("document.documentElement.scrollHeight <= 630")
             assert social.evaluate("document.documentElement.scrollWidth <= 1200")
+            assert social.locator("h1 span").all_inner_texts() == ["Continual Learning Mechanisms Compose", "for Long-Horizon Memorization"]
+            assert social.locator("h1 span").evaluate_all("lines => lines.every(line => line.scrollWidth <= line.clientWidth)")
             assert social.locator(".metrics, .metric").count() == 0
             assert social.locator(".summary strong").inner_text() == "28"
             assert social.locator(".summary strong").evaluate("e => getComputedStyle(e).fontWeight") == "700"
@@ -150,7 +160,7 @@ def main():
 
     assert not errors, errors
     assert not failures, failures
-    print("PASS: all 16 combinations, keyboard input, citation copying and fallback, local links, images, fonts, no-JavaScript content, and five viewport sizes.")
+    print("PASS: all 16 combinations, recorded TSH cuts across three datasets, autoplay/pause/replay/scrubbing, reduced motion, keyboard input, citation copying and fallback, local links, images, fonts, no-JavaScript content, and five viewport sizes.")
     print(f"Screenshots: {output}")
 
 

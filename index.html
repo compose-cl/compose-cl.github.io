@@ -13,14 +13,14 @@
   <meta property="og:title" content="Continual Learning Mechanisms Compose for Long-Horizon Memorization">
   <meta property="og:description" content="Composing three anchors with merged LoRA substantially improves average final retention after 100 tasks from 1.2% to 34.9%, a 28-fold improvement.">
   <meta property="og:url" content="https://compose-cl.github.io/">
-  <meta property="og:image" content="https://compose-cl.github.io/static/images/social-preview.png?v=2">
+  <meta property="og:image" content="https://compose-cl.github.io/static/images/social-preview.png?v=3">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Diagram of data, function, and weight anchors and shared versus merged LoRA allocation rules.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Continual Learning Mechanisms Compose for Long-Horizon Memorization">
   <meta name="twitter:description" content="Composing three anchors with merged LoRA substantially improves average final retention after 100 tasks from 1.2% to 34.9%, a 28-fold improvement.">
-  <meta name="twitter:image" content="https://compose-cl.github.io/static/images/social-preview.png?v=2">
+  <meta name="twitter:image" content="https://compose-cl.github.io/static/images/social-preview.png?v=3">
   <meta name="twitter:image:alt" content="Diagram of data, function, and weight anchors and shared versus merged LoRA allocation rules.">
   <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="static/fonts/Lato-Regular.ttf" as="font" type="font/ttf" crossorigin>
@@ -28,8 +28,11 @@
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
   <link rel="stylesheet" href="static/css/project.css">
+  <link rel="stylesheet" href="static/css/tsh.css">
   <script defer src="static/js/results-data.js"></script>
   <script defer src="static/js/project.js"></script>
+  <script defer src="static/js/tsh-data.js"></script>
+  <script defer src="static/js/tsh.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -52,7 +55,7 @@
           <h1 class="title is-1 publication-title" id="paper-title">Continual Learning Mechanisms Compose for Long-Horizon Memorization</h1>
           <div class="publication-authors">
             <span class="author-block"><a href="https://zheyuanzhang.me/">Zheyuan Zhang</a><sup>*</sup></span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=BLkk5kYAAAAJ">Alvin Zhang</a><sup>*</sup></span>
+            <span class="author-block"><a href="https://alvinzh04.github.io/">Alvin Zhang</a><sup>*</sup></span>
             <span class="author-block"><a href="https://danielkhashabi.com/">Daniel Khashabi</a><sup>†</sup></span>
             <span class="author-block"><a href="https://www.tshu.io/">Tianmin Shu</a><sup>†</sup></span>
           </div>
@@ -60,7 +63,7 @@
           <p class="author-notes"><sup>*</sup> Equal contribution <span aria-hidden="true">·</span> <sup>†</sup> Equal advising</p>
           <div class="publication-links" aria-label="Project resources">
             <span class="link-block"><button class="button resource-button is-dark" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg><span>Paper <span class="release-label">Coming soon</span></span></button></span>
-            <span class="link-block"><button class="button resource-button is-dark" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18"/></svg><span>Code <span class="release-label">Coming soon</span></span></button></span>
+            <span class="link-block"><a class="button resource-button is-dark" href="https://github.com/cozheyuanzhangde/compose-cl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18"/></svg><span>Code</span></a></span>
             <span class="link-block"><a class="button resource-button explore-button" href="#results"><span>Explore the results</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></span>
           </div>
           <p class="hero-summary">Complementary mechanisms work better together.<br>We test their compositions over <strong>100 sequential tasks</strong>.</p>
@@ -172,8 +175,43 @@
           <h2 class="title is-3" id="search-title">Task-Level Successive Halving</h2>
           <p>We introduce Task-Level Successive Halving to seek preliminary evidence for our hypothesis that composing complementary mechanisms improves long-horizon memorization. Starting with 90 candidates, we retain the top 45, 23, and 10 after 10, 20, and 50 tasks, respectively, based on mean retention over three seeds.</p>
         </div>
-        <figure class="paper-figure">
-          <a class="figure-link" href="static/images/sho-results.png" aria-label="Open the successive-halving figure at full resolution"><img src="static/images/sho-results.png" loading="lazy" width="2400" height="1250" alt="Four stages of task-level successive halving at 10, 20, 50, and 100 tasks. Standalone mechanisms are eliminated before 50 tasks. All methods reaching 100 tasks combine a data anchor with merged LoRA."></a>
+        <div class="tsh-explorer" id="tsh-explorer" hidden>
+          <div class="tsh-topline">
+            <div class="tsh-datasets" role="group" aria-label="Dataset for successive halving">
+              <button type="button" data-tsh-dataset="symbol_qa" aria-pressed="true">Symbol-QA</button>
+              <button type="button" data-tsh-dataset="llm_qa" aria-pressed="false">LLM-QA</button>
+              <button type="button" data-tsh-dataset="real_qa" aria-pressed="false">Real-QA</button>
+            </div>
+            <p class="tsh-legend"><span><i class="tsh-dot" aria-hidden="true"></i> Remaining</span><span><i class="tsh-dot is-eliminated" aria-hidden="true"></i> Eliminated</span></p>
+          </div>
+          <div class="tsh-summary">
+            <p><strong id="tsh-count">90</strong><span> / 90 candidates remain</span></p>
+            <p id="tsh-stage">All candidates start together.</p>
+          </div>
+          <div class="tsh-matrix" id="tsh-matrix" role="table" aria-label="Remaining candidates by anchors and low-rank allocation rule"></div>
+          <div class="tsh-player">
+            <div class="tsh-player-heading">
+              <div class="tsh-playback">
+                <button type="button" id="tsh-play" aria-label="Play pruning animation"><svg viewBox="0 0 20 20" aria-hidden="true"><path class="tsh-play-icon" d="m6 3 11 7-11 7z"/><path class="tsh-pause-icon" d="M5 3h3v14H5zm7 0h3v14h-3z"/></svg><span>Play</span></button>
+                <button type="button" id="tsh-restart" aria-label="Replay pruning animation"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7a7 7 0 1 1-1 5M4 2v5h5"/></svg><span>Replay</span></button>
+              </div>
+              <label for="tsh-progress">Task <output id="tsh-task" for="tsh-progress">0</output><span> / 100</span></label>
+            </div>
+            <input id="tsh-progress" type="range" min="0" max="100" step="1" value="0" aria-describedby="tsh-help">
+            <div class="tsh-checkpoints" role="group" aria-label="Jump to a task boundary">
+              <button type="button" data-tsh-task="0" aria-pressed="true"><span>Start</span><strong>90 candidates</strong></button>
+              <button type="button" data-tsh-task="10" aria-pressed="false"><span>10 tasks</span><strong>45 remain</strong></button>
+              <button type="button" data-tsh-task="20" aria-pressed="false"><span>20 tasks</span><strong>23 remain</strong></button>
+              <button type="button" data-tsh-task="50" aria-pressed="false"><span>50 tasks</span><strong>10 remain</strong></button>
+              <button type="button" data-tsh-task="100" aria-pressed="false"><span>100 tasks</span><strong>10 finish</strong></button>
+            </div>
+          </div>
+          <p class="tsh-help" id="tsh-help">Drag to explore or select a task boundary. Each dot is one candidate. Pruning follows the recorded rankings averaged over three seeds, with cuts only at 10, 20, and 50 tasks.</p>
+          <p class="tsh-finding">Every method reaching 100 tasks combines the data anchor with merged LoRA.</p>
+          <p class="sr-only" id="tsh-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </div>
+        <figure class="paper-figure" id="tsh-fallback">
+          <a class="figure-link" href="static/images/sho-results.png" aria-label="Open the successive-halving figure at full resolution"><img src="static/images/sho-results.png" width="2400" height="1250" alt="Four stages of task-level successive halving at 10, 20, 50, and 100 tasks. Standalone mechanisms are eliminated before 50 tasks. All methods reaching 100 tasks combine a data anchor with merged LoRA."></a>
           <figcaption>A percentile rank is the percentage of other surviving candidates ranked below a method. Bars average these ranks over variants and then datasets. Gray entries have no surviving variants in any dataset. Ranks are relative to the changing candidate pool, not changes in absolute retention. <strong>Every method reaching 100 tasks combines replay with merged LoRA.</strong></figcaption>
         </figure>
       </div>
@@ -181,7 +219,7 @@
 
     <section class="section citation-section" id="citation" aria-labelledby="citation-title">
       <div class="container is-max-desktop">
-        <div class="citation-heading"><div><h2 class="title is-3" id="citation-title">Citation</h2><p>Project citation. Paper and code links will be added upon release.</p></div><button type="button" class="copy-button" id="copy-bibtex" hidden>Copy BibTeX</button></div>
+        <div class="citation-heading"><div><h2 class="title is-3" id="citation-title">Citation</h2><p>If you use this work, please cite:</p></div><button type="button" class="copy-button" id="copy-bibtex" hidden>Copy BibTeX</button></div>
         <pre class="bibtex"><code id="bibtex-code">@article{zhang2026continual,
   title  = {Continual Learning Mechanisms Compose for Long-Horizon Memorization},
   author = {Zhang, Zheyuan and Zhang, Alvin and Khashabi, Daniel and Shu, Tianmin},
