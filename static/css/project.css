@@ -31,6 +31,7 @@ sup{font-size:.64em;vertical-align:super}
 .publication-title{font-size:47px!important;font-weight:700!important;line-height:1.15!important;letter-spacing:-1.45px;max-width:1050px;margin:0 auto 25px!important;text-wrap:balance}
 .publication-authors{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 24px;font-size:19px;margin:0 0 8px!important;font-weight:400}
 .publication-authors a{font-weight:400!important;color:#236bbf!important;text-decoration:none}
+.publication-authors a::after{display:none}
 .author-block{display:inline-block}
 .author-block sup{margin-left:3px}
 .affiliation{font-size:17px}

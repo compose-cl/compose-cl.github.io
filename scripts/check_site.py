@@ -39,6 +39,11 @@ def main():
         assert page.locator(".resource-button[disabled]").count() == 2
         assert page.locator("#composition-explorer").is_visible()
         assert "Lato" in page.locator("h1").evaluate("e => getComputedStyle(e).fontFamily")
+        for author in page.locator(".publication-authors a").all():
+            author.hover()
+            assert author.evaluate("e => getComputedStyle(e, '::after').display") == "none"
+            assert author.evaluate("e => getComputedStyle(e).textDecorationLine") == "none"
+            assert "Lato" in author.evaluate("e => getComputedStyle(e).fontFamily")
         assert page.locator("main > section").evaluate_all("sections => sections.slice(0, 2).map(section => section.id)") == ["top", "results"]
         assert page.locator("#top .eyebrow").count() == 0
         assert page.locator(".scope-section").count() == 0
